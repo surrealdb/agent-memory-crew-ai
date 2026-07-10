@@ -17,8 +17,7 @@ together:
 
 - Python 3.10+
 - CrewAI 1.5+
-- Spectron access (endpoint, context, API key). Spectron is in
-  [invite-only preview](https://surrealdb.com/pricing/spectron).
+- Spectron access (endpoint, context, API key).
 
 ## Install
 
