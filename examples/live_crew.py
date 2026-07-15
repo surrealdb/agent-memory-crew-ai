@@ -1,7 +1,7 @@
 """Run a real CrewAI crew with Spectron-backed automatic memory.
 
 Requires:
-  * pip install "spectron-crew-ai"   (pulls in crewai + surrealdb[spectron])
+  * pip install "spectron-crew-ai"   (pulls in crewai + surrealdb>=3.0.0a1)
   * Spectron credentials in the environment:
         export SPECTRON_ENDPOINT="https://your-instance.spectron.dev"
         export SPECTRON_CONTEXT="my-context"
@@ -32,7 +32,7 @@ def main() -> int:
     if not memory.is_available():
         print(
             "Spectron is not configured. Set SPECTRON_ENDPOINT / SPECTRON_CONTEXT / "
-            'SPECTRON_API_KEY and `pip install "surrealdb[spectron]"`.',
+            'SPECTRON_API_KEY and `pip install "surrealdb>=3.0.0a1"`.',
             file=sys.stderr,
         )
         return 1

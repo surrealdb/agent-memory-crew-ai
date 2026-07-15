@@ -78,7 +78,7 @@ class SpectronMemory:
 
         def _call(client: Any) -> Any:
             if effective:
-                return client.remember(text, scope=effective)
+                return client.remember(text, scopes=effective)
             return client.remember(text)
 
         _, result = self._runtime.call("remember", _call)
@@ -98,7 +98,7 @@ class SpectronMemory:
             if session_id:
                 kwargs["session_id"] = session_id
             if effective:
-                kwargs["scope"] = effective
+                kwargs["scopes"] = effective
             return client.remember_many(items, **kwargs)
 
         _, result = self._runtime.call("remember_many", _call)
@@ -264,7 +264,7 @@ def _remember_many(
     if session_id:
         kwargs["session_id"] = session_id
     if scope:
-        kwargs["scope"] = scope
+        kwargs["scopes"] = scope
     return client.remember_many(items, **kwargs)
 
 

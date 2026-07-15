@@ -42,7 +42,7 @@ class FakeSpectron:
     def recall(self, query, *, k=None, lens=None):
         return _Resp(memories=[{"text": f} for f in self._facts][: (k or 5)])
 
-    def remember_many(self, items, *, session_id=None, scope=None, **kwargs):
+    def remember_many(self, items, *, session_id=None, scopes=None, **kwargs):
         for m in items:
             self._facts.append(f"[{m['role']}] {m['content']}")
         return _Resp(count=len(items))

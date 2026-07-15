@@ -18,8 +18,8 @@ classifiers = [
 ]
 dependencies = [
     "crewai>=1.5.0",
-    # Spectron ships as an optional extra of the SurrealDB Python SDK.
-    "surrealdb[spectron]>=1.0.0a5",
+    # Spectron ships inside the SurrealDB Python SDK from the v3 alpha onward.
+    "surrealdb>=3.0.0a1",
 ]
 
 [project.optional-dependencies]

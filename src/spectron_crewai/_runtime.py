@@ -71,7 +71,7 @@ class SpectronRuntime:
             return None
         if not spectron_installed():
             logger.warning(
-                "Spectron SDK not installed; run `pip install \"surrealdb[spectron]\"`. "
+                "Spectron SDK not installed; run `pip install \"surrealdb>=3.0.0a1\"`. "
                 "Memory disabled."
             )
             self._disabled = True

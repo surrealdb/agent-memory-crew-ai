@@ -136,7 +136,7 @@ class SpectronRememberTool(_SpectronTool):
 
         def _call(client: Any) -> Any:
             if effective:
-                return client.remember(text, scope=effective)
+                return client.remember(text, scopes=effective)
             return client.remember(text)
 
         ok, result = self._runtime.call("remember", _call)

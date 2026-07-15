@@ -25,8 +25,6 @@ together:
 pip install spectron-crew-ai
 ```
 
-This pulls in CrewAI and the Spectron SDK (`surrealdb[spectron]`).
-
 ## Configure
 
 Provide credentials through the environment. The API key is a secret and belongs
@@ -158,23 +156,12 @@ ranking server-side, so it is exposed here as tools and an event-driven memory
 layer rather than as a `StorageBackend`. This keeps Spectron's semantic, lexical,
 graph and temporal recall intact.
 
-## Spectron SDK contract
-
-Spectron is in invite-only preview. The client method names used here
-(`recall`, `remember`, `remember_many`, `query_context`, `forget`, `reflect`,
-`consolidate`, `documents.upload`) match the SurrealDB Spectron Python SDK and
-the sibling integrations. Confirm them against your installed
-`surrealdb[spectron]` version if a call behaves unexpectedly.
-
 ## Development
 
 ```bash
 pip install -e ".[dev]" crewai
 pytest
 ```
-
-Tests use a mock Spectron client and need neither a live server nor the
-`surrealdb[spectron]` extra.
 
 ## License
 

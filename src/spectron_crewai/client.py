@@ -1,8 +1,9 @@
 """Spectron client construction and error-class resolution.
 
-Imports are deliberately lazy: the SurrealDB Spectron SDK is only imported when
-we actually build a client, so importing this package never fails just because
-the optional ``surrealdb[spectron]`` extra is not installed.
+Imports are deliberately lazy: the SurrealDB SDK (which bundles the Spectron
+client from the v3 alpha onward) is only imported when we actually build a
+client, so importing this package never fails just because ``surrealdb`` is not
+installed.
 """
 
 from __future__ import annotations

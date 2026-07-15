@@ -38,9 +38,9 @@ class FakeSpectron:
         self._facts = []
         self.documents = _Docs()
 
-    def remember(self, text, *, scope=None, **kwargs):
+    def remember(self, text, *, scopes=None, **kwargs):
         self._facts.append(text)
-        return _Resp(stored=True, scope=scope)
+        return _Resp(stored=True, scopes=scopes)
 
     def recall(self, query, *, k=None, lens=None):
         return _Resp(memories=[{"text": f} for f in self._facts][: (k or 5)])

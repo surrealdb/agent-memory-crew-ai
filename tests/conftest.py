@@ -1,7 +1,7 @@
 """Shared fakes and fixtures for the Spectron CrewAI tests.
 
-Nothing here touches the network or the real ``surrealdb[spectron]`` extra: a
-fake client stands in for Spectron and is injected directly into the runtime.
+Nothing here touches the network or the real ``surrealdb`` SDK: a fake client
+stands in for Spectron and is injected directly into the runtime.
 """
 
 from __future__ import annotations
@@ -50,15 +50,15 @@ class FakeSpectron:
             raise RuntimeError("boom in query_context")
         return FakeResp(answer="Tobie is the CTO and prefers dark mode.")
 
-    def remember(self, text, *, scope=None, **kwargs):
-        self.calls.append(("remember", text, scope))
+    def remember(self, text, *, scopes=None, **kwargs):
+        self.calls.append(("remember", text, scopes))
         if self.fail:
             raise RuntimeError("boom in remember")
         return FakeResp(stored=True)
 
-    def remember_many(self, items, *, session_id=None, scope=None, **kwargs):
+    def remember_many(self, items, *, session_id=None, scopes=None, **kwargs):
         self.calls.append(
-            ("remember_many", tuple(m["role"] for m in items), session_id, scope)
+            ("remember_many", tuple(m["role"] for m in items), session_id, scopes)
         )
         if self.fail:
             raise RuntimeError("boom in remember_many")
