@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "spectron-integration-crewai"
+name = "spectron-crewai"
 version = "0.1.0"
 description = "SurrealDB Spectron memory tools and automatic memory for CrewAI"
 readme = "README.md"
