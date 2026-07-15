@@ -22,7 +22,7 @@ together:
 ## Install
 
 ```bash
-pip install spectron-crewai
+pip install spectron-crew-ai
 ```
 
 This pulls in CrewAI and the Spectron SDK (`surrealdb[spectron]`).

@@ -1,7 +1,7 @@
 """Run a real CrewAI crew with Spectron-backed automatic memory.
 
 Requires:
-  * pip install "spectron-crewai"   (pulls in crewai + surrealdb[spectron])
+  * pip install "spectron-crew-ai"   (pulls in crewai + surrealdb[spectron])
   * Spectron credentials in the environment:
         export SPECTRON_ENDPOINT="https://your-instance.spectron.dev"
         export SPECTRON_CONTEXT="my-context"
