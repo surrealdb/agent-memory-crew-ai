@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "spectron-crew-ai"
-version = "0.1.0"
+version = "0.2.0"
 description = "SurrealDB Spectron memory tools and automatic memory for CrewAI"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -19,7 +19,7 @@ classifiers = [
 dependencies = [
     "crewai>=1.5.0",
     # Spectron ships inside the SurrealDB Python SDK from the v3 alpha onward.
-    "surrealdb>=3.0.0a1",
+    "surrealdb>=3.0.0a2",
 ]
 
 [project.optional-dependencies]
