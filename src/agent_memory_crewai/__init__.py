@@ -1,7 +1,7 @@
-"""SurrealDB AgentMemory integration for CrewAI.
+"""SurrealDB Agent Memory integration for CrewAI.
 
 Two ways to give a crew persistent, provenance-first memory backed by
-`AgentMemory <https://surrealdb.com/agent-memory>`_:
+`Agent Memory <https://surrealdb.com/agent-memory>`_:
 
 * **Tools** an agent calls explicitly::
 
@@ -10,15 +10,15 @@ Two ways to give a crew persistent, provenance-first memory backed by
 
 * **Automatic memory** wired into a crew through the event bus::
 
-      from agent_memory_crewai import AgentMemoryMemory
-      memory = AgentMemoryMemory(default_scope="user/tobie")
+      from agent_memory_crewai import Agent Memory
+      memory = Agent Memory(default_scope="user/tobie")
       memory.attach()   # recall before tasks, write back after, consolidate at end
 """
 
 from __future__ import annotations
 
 from .config import AgentMemoryConfig
-from .memory import AgentMemoryMemory, AgentMemoryMemoryListener
+from .memory import AgentMemory, AgentMemoryListener
 from .tools import (
     AgentMemoryContextTool,
     AgentMemoryForgetTool,
@@ -32,8 +32,8 @@ from .tools import (
 
 __all__ = [
     "AgentMemoryConfig",
-    "AgentMemoryMemory",
-    "AgentMemoryMemoryListener",
+    "AgentMemory",
+    "AgentMemoryListener",
     "get_agent_memory_tools",
     "get_sessionized_agent_memory_tools",
     "AgentMemoryRecallTool",
@@ -44,4 +44,4 @@ __all__ = [
     "AgentMemoryUploadTool",
 ]
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"

@@ -1,4 +1,4 @@
-"""Configuration for the AgentMemory CrewAI integration.
+"""Configuration for the Agent Memory CrewAI integration.
 
 Every field can be passed explicitly to :class:`AgentMemoryConfig` or left to
 resolve from the environment. Explicit values win over the environment. The API
@@ -24,11 +24,11 @@ ENV_MAX_RETRIES = "AGENT_MEMORY_MAX_RETRIES"
 
 @dataclass
 class AgentMemoryConfig:
-    """Resolved settings for a AgentMemory client.
+    """Resolved settings for an Agent Memory client.
 
     Fields left as ``None`` fall back to their environment variable when
     :meth:`from_env` is used. ``endpoint``, ``context`` and ``api_key`` are the
-    minimum needed to talk to AgentMemory.
+    minimum needed to talk to Agent Memory.
     """
 
     endpoint: Optional[str] = None
@@ -70,7 +70,7 @@ class AgentMemoryConfig:
         )
 
     def is_configured(self) -> bool:
-        """True when the minimum needed to talk to AgentMemory is present."""
+        """True when the minimum needed to talk to Agent Memory is present."""
         return bool(self.endpoint and self.context and self.api_key)
 
 

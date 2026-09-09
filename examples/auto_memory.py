@@ -1,7 +1,7 @@
 """Show the automatic memory listener against a fake client. No credentials.
 
 This drives the same event flow a real crew produces (task started, task
-completed, crew finished) and prints what the AgentMemory memory listener does at
+completed, crew finished) and prints what the Agent Memory listener does at
 each step: recall before a task, write the result back after a task, and
 consolidate when the crew finishes. It uses an in-memory fake client so it runs
 with nothing but this package and CrewAI installed.
@@ -22,7 +22,7 @@ from crewai.events import (
 )
 from crewai.tasks.task_output import TaskOutput
 
-from agent_memory_crewai import AgentMemoryConfig, AgentMemoryMemory
+from agent_memory_crewai import AgentMemoryConfig, AgentMemory
 
 
 class _Resp:
@@ -67,8 +67,8 @@ def main() -> None:
     )
     fake = FakeAgentMemory()
 
-    # In real use: AgentMemoryMemory(default_scope="user/tobie").attach()
-    memory = AgentMemoryMemory(config=config, client=fake)
+    # In real use: Agent Memory(default_scope="user/tobie").attach()
+    memory = AgentMemory(config=config, client=fake)
 
     # Seed a fact so the pre-task recall has something to return.
     memory.remember_many([{"role": "user", "content": "Tobie prefers window seats"}])

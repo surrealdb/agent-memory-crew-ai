@@ -5,12 +5,12 @@ build-backend = "hatchling.build"
 [project]
 name = "agent-memory-crew-ai"
 version = "0.3.0"
-description = "SurrealDB AgentMemory memory tools and automatic memory for CrewAI"
+description = "SurrealDB Agent Memory tools and automatic memory for CrewAI"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
 authors = [{ name = "SurrealDB" }]
-keywords = ["surrealdb", "agent_memory", "crewai", "agent", "memory", "llm"]
+keywords = ["surrealdb", "agent-memory", "crewai", "agent", "memory", "llm"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: Apache Software License",
@@ -18,7 +18,7 @@ classifiers = [
 ]
 dependencies = [
     "crewai>=1.5.0",
-    # AgentMemory ships inside the SurrealDB Python SDK from the v3 alpha onward.
+    # Agent Memory ships inside the SurrealDB Python SDK from the v3 alpha onward.
     "surrealdb[memory]>=3.0.0b8",
 ]
 

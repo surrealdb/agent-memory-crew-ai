@@ -1,7 +1,7 @@
-"""Shared fakes and fixtures for the AgentMemory CrewAI tests.
+"""Shared fakes and fixtures for the Agent Memory CrewAI tests.
 
 Nothing here touches the network or the real ``surrealdb`` SDK: a fake client
-stands in for AgentMemory and is injected directly into the runtime.
+stands in for Agent Memory and is injected directly into the runtime.
 """
 
 from __future__ import annotations
@@ -86,7 +86,7 @@ class FakeAgentMemory:
 @pytest.fixture
 def config():
     return AgentMemoryConfig(
-        endpoint="https://example.agent_memory.dev",
+        endpoint="https://example.agent-memory.dev",
         context="test-ctx",
         api_key="sk-test",
         default_scope="user/tobie",

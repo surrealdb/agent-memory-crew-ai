@@ -1,4 +1,4 @@
-"""Tests for the AgentMemory CrewAI tools using a mock client."""
+"""Tests for the Agent Memory CrewAI tools using a mock client."""
 
 from __future__ import annotations
 

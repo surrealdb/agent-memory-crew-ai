@@ -1,22 +1,22 @@
-"""Automatic AgentMemory memory for CrewAI.
+"""Automatic Agent Memory for CrewAI.
 
 Two pieces:
 
-* :class:`AgentMemoryMemory` is a small façade over a shared AgentMemory client. Use it
+* :class:`Agent Memory` is a small façade over a shared Agent Memory client. Use it
   directly for programmatic remember/recall, or to build the tool set.
-* :class:`AgentMemoryMemoryListener` wires that memory into a crew through CrewAI's
+* :class:`AgentMemoryListener` wires that memory into a crew through CrewAI's
   event bus so memory works without changing your agents or tasks:
 
     - before each task it recalls relevant memory and stashes it (readable on the
       memory object and logged when ``verbose`` is set),
-    - after each task it writes the result back to AgentMemory on a background
+    - after each task it writes the result back to Agent Memory on a background
       thread,
     - when the crew finishes it triggers a background consolidation.
 
 Constructing a listener registers it on the global event bus, so a single
-``AgentMemoryMemory(...).attach()`` call is enough to enable automatic memory.
+``Agent Memory(...).attach()`` call is enough to enable automatic memory.
 
-Every handler is fail-open: a AgentMemory problem is logged and skipped, never
+Every handler is fail-open: an Agent Memory problem is logged and skipped, never
 raised into the crew.
 """
 
@@ -39,8 +39,8 @@ from .tools import get_agent_memory_tools
 logger = logging.getLogger("agent_memory_crewai")
 
 
-class AgentMemoryMemory:
-    """A façade over a shared AgentMemory client for use with CrewAI."""
+class AgentMemory:
+    """A façade over a shared Agent Memory client for use with CrewAI."""
 
     def __init__(
         self,
@@ -153,14 +153,14 @@ class AgentMemoryMemory:
     # -- wiring --------------------------------------------------------------
 
     def tools(self, *, scope: Optional[str] = None) -> List[Any]:
-        """Return the AgentMemory tool set backed by this memory's client."""
+        """Return the Agent Memory tool set backed by this memory's client."""
         return get_agent_memory_tools(runtime=self._runtime, scope=scope)
 
-    def listener(self, **kwargs: Any) -> "AgentMemoryMemoryListener":
+    def listener(self, **kwargs: Any) -> "AgentMemoryListener":
         """Create (and register) an event listener for automatic memory."""
-        return AgentMemoryMemoryListener(self, **kwargs)
+        return AgentMemoryListener(self, **kwargs)
 
-    def attach(self, **kwargs: Any) -> "AgentMemoryMemoryListener":
+    def attach(self, **kwargs: Any) -> "AgentMemoryListener":
         """Enable automatic memory. Alias for :meth:`listener`.
 
         Constructing the listener registers it on the CrewAI event bus, so the
@@ -173,12 +173,12 @@ class AgentMemoryMemory:
         self._runtime.close()
 
 
-class AgentMemoryMemoryListener(BaseEventListener):
-    """Wires :class:`AgentMemoryMemory` into a crew through the CrewAI event bus."""
+class AgentMemoryListener(BaseEventListener):
+    """Wires :class:`Agent Memory` into a crew through the CrewAI event bus."""
 
     def __init__(
         self,
-        memory: AgentMemoryMemory,
+        memory: AgentMemory,
         *,
         recall: bool = True,
         write: bool = True,
@@ -211,12 +211,12 @@ class AgentMemoryMemoryListener(BaseEventListener):
             try:
                 hits = self._memory.recall(query, scope=self._scope)
             except Exception as exc:  # pragma: no cover - fail open
-                logger.warning("AgentMemory auto-recall failed: %s", exc)
+                logger.warning("Agent Memory auto-recall failed: %s", exc)
                 return
             block = _format_block(hits)
             self.last_context = block
             if block and self.verbose:
-                logger.info("AgentMemory recalled for task:\n%s", block)
+                logger.info("Agent Memory recalled for task:\n%s", block)
 
         @crewai_event_bus.on(TaskCompletedEvent)
         def _on_task_completed(source: Any, event: Any) -> None:  # noqa: ANN001

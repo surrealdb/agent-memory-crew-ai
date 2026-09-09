@@ -1,10 +1,10 @@
-# AgentMemory ⇄ CrewAI
+# Agent Memory ⇄ CrewAI
 
 Give your [CrewAI](https://www.crewai.com/) agents persistent, provenance-first
-memory backed by [SurrealDB AgentMemory](https://surrealdb.com/agent-memory):
+memory backed by [SurrealDB Agent Memory](https://surrealdb.com/agent-memory):
 tri-temporal agent memory with semantic, lexical, graph and temporal recall.
 
-This package offers two ways to use AgentMemory with CrewAI, and they work well
+This package offers two ways to use Agent Memory with CrewAI, and they work well
 together:
 
 - **Tools** an agent calls explicitly (recall, remember, context, forget,
@@ -17,7 +17,7 @@ together:
 
 - Python 3.10+
 - CrewAI 1.5+
-- AgentMemory access (endpoint, context, API key).
+- Agent Memory access (endpoint, context, API key).
 
 ## Install
 
@@ -31,7 +31,7 @@ Provide credentials through the environment. The API key is a secret and belongs
 in a `.env` file, not in source.
 
 ```bash
-export AGENT_MEMORY_ENDPOINT="https://your-instance.agent_memory.dev"
+export AGENT_MEMORY_ENDPOINT="https://your-instance.agent-memory.dev"
 export AGENT_MEMORY_CONTEXT="my-context"
 export AGENT_MEMORY_API_KEY="..."
 # optional
@@ -39,12 +39,12 @@ export AGENT_MEMORY_DEFAULT_SCOPE="user/tobie"
 export AGENT_MEMORY_TOP_K="5"
 ```
 
-You can also pass any of these directly to `AgentMemoryMemory(...)` or
+You can also pass any of these directly to `AgentMemory(...)` or
 `AgentMemoryConfig(...)` instead of using the environment.
 
 ## Quickstart: tools
 
-Attach the AgentMemory tools to an agent and let it decide when to use memory.
+Attach the Agent Memory tools to an agent and let it decide when to use memory.
 
 ```python
 from crewai import Agent, Task, Crew
@@ -83,9 +83,9 @@ when the crew finishes.
 
 ```python
 from crewai import Agent, Task, Crew
-from agent_memory_crewai import AgentMemoryMemory
+from agent_memory_crewai import AgentMemory
 
-memory = AgentMemoryMemory(default_scope="user/tobie")
+memory = AgentMemory(default_scope="user/tobie")
 memory.attach(verbose=True)   # registers the event listener
 
 agent = Agent(
@@ -105,7 +105,7 @@ Crew(agents=[agent], tasks=[task]).kickoff()
 memory.close()                # flush background writes on shutdown
 ```
 
-`AgentMemoryMemory` is also usable directly:
+`AgentMemory` is also usable directly:
 
 ```python
 memory.remember("Tobie prefers window seats", scope="user/tobie")
@@ -115,7 +115,7 @@ answer = memory.context("What are Tobie's travel preferences?")
 
 ## Tools
 
-| Tool | AgentMemory call | Purpose |
+| Tool | Agent Memory call | Purpose |
 |---|---|---|
 | `agent_memory_recall(query, k?)` | `recall` | Search memory (semantic, lexical, graph, temporal). |
 | `agent_memory_remember(text, scope?)` | `remember` | Store a durable fact. |
@@ -130,7 +130,7 @@ answer = memory.context("What are Tobie's travel preferences?")
 |---|---|---|---|
 | `api_key` | `AGENT_MEMORY_API_KEY` | none | secret, required (keep it in `.env`) |
 | `endpoint` | `AGENT_MEMORY_ENDPOINT` | none | required, origin with no trailing slash |
-| `context` | `AGENT_MEMORY_CONTEXT` | none | required; AgentMemory pins a client to one context |
+| `context` | `AGENT_MEMORY_CONTEXT` | none | required; Agent Memory pins a client to one context |
 | `default_scope` | `AGENT_MEMORY_DEFAULT_SCOPE` | none | scope for writes and lens for reads, for example `user/tobie` |
 | `top_k` | `AGENT_MEMORY_TOP_K` | `5` | memories recalled per query |
 | `timeout` | `AGENT_MEMORY_TIMEOUT` | `30` | client timeout in seconds |
@@ -140,8 +140,8 @@ answer = memory.context("What are Tobie's travel preferences?")
 
 The integration is built to never destabilise a crew:
 
-- Writes run on a background daemon thread, so tasks never block on AgentMemory I/O.
-- Every AgentMemory call is wrapped. Failures are logged and degrade to an empty or
+- Writes run on a background daemon thread, so tasks never block on Agent Memory I/O.
+- Every Agent Memory call is wrapped. Failures are logged and degrade to an empty or
   error result rather than raising into the agent or crew loop (fail open). A
   tool returns a short JSON error string instead of throwing.
 - After repeated failures, or any authentication error, a circuit breaker
@@ -151,9 +151,9 @@ The integration is built to never destabilise a crew:
 
 CrewAI's built-in `Memory` storage backend is embedding-centric: it embeds a
 query locally and hands the storage layer a vector, never the query text.
-AgentMemory is a text-native service that does its own embedding and multi-signal
+Agent Memory is a text-native service that does its own embedding and multi-signal
 ranking server-side, so it is exposed here as tools and an event-driven memory
-layer rather than as a `StorageBackend`. This keeps AgentMemory's semantic, lexical,
+layer rather than as a `StorageBackend`. This keeps Agent Memory's semantic, lexical,
 graph and temporal recall intact.
 
 ## Development

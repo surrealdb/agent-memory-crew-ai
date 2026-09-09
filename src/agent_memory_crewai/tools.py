@@ -1,10 +1,10 @@
-"""CrewAI tools backed by SurrealDB AgentMemory.
+"""CrewAI tools backed by SurrealDB Agent Memory.
 
 Each tool is a :class:`crewai.tools.BaseTool` an agent can call directly:
 
 * ``agent_memory_recall``   search memory (semantic, lexical, graph, temporal)
 * ``agent_memory_remember`` store a durable fact
-* ``agent_memory_context``  ask AgentMemory to synthesise an answer from memory
+* ``agent_memory_context``  ask Agent Memory to synthesise an answer from memory
 * ``agent_memory_forget``   supersede or hard-delete memories
 * ``agent_memory_reflect``  derive higher-level insights
 * ``agent_memory_upload``   ingest a document into knowledge memory
@@ -78,7 +78,7 @@ class _UploadArgs(BaseModel):
 
 
 class _AgentMemoryTool(BaseTool):
-    """Common wiring shared by all AgentMemory tools."""
+    """Common wiring shared by all Agent Memory tools."""
 
     _runtime: AgentMemoryRuntime = PrivateAttr()
     _scope: Optional[str] = PrivateAttr(default=None)
@@ -89,7 +89,7 @@ class _AgentMemoryTool(BaseTool):
         self._scope = scope if scope is not None else runtime.default_scope
 
     def _unavailable(self) -> str:
-        return json.dumps({"error": "AgentMemory memory is unavailable.", "provider": "agent_memory"})
+        return json.dumps({"error": "Agent Memory is unavailable.", "provider": "agent_memory"})
 
     def _ok(self, result: Any) -> str:
         return json.dumps({"success": True, "result": to_jsonable(result)}, default=str)
@@ -101,7 +101,7 @@ class _AgentMemoryTool(BaseTool):
 class AgentMemoryRecallTool(_AgentMemoryTool):
     name: str = "agent_memory_recall"
     description: str = (
-        "Search long-term memory in AgentMemory for facts relevant to a query, "
+        "Search long-term memory in Agent Memory for facts relevant to a query, "
         "ranked across semantic, lexical, graph and temporal signals. Use this "
         "to retrieve what is known about a person, project, or topic."
     )
@@ -125,7 +125,7 @@ class AgentMemoryRecallTool(_AgentMemoryTool):
 class AgentMemoryRememberTool(_AgentMemoryTool):
     name: str = "agent_memory_remember"
     description: str = (
-        "Store a durable fact in AgentMemory memory. AgentMemory versions facts "
+        "Store a durable fact in Agent Memory. Agent Memory versions facts "
         "tri-temporally and never overwrites history, so prefer clear, "
         "self-contained statements."
     )
@@ -146,7 +146,7 @@ class AgentMemoryRememberTool(_AgentMemoryTool):
 class AgentMemoryContextTool(_AgentMemoryTool):
     name: str = "agent_memory_context"
     description: str = (
-        "Ask AgentMemory to synthesise an answer from memory for a question, rather "
+        "Ask Agent Memory to synthesise an answer from memory for a question, rather "
         "than returning raw hits. Use when you want a summarised, reasoned view."
     )
     args_schema: type[BaseModel] = _ContextArgs
@@ -234,14 +234,14 @@ def get_agent_memory_tools(
     runtime: Optional[AgentMemoryRuntime] = None,
     client: Any = None,
 ) -> List[BaseTool]:
-    """Build the full set of AgentMemory tools sharing one runtime.
+    """Build the full set of Agent Memory tools sharing one runtime.
 
     Args:
         scope: Optional scope applied to reads (as a lens) and writes. Defaults
             to the configured ``default_scope``.
         config: Explicit config. Resolved from the environment when omitted.
         runtime: An existing runtime to reuse (all tools share it).
-        client: A pre-built AgentMemory client (mainly for tests).
+        client: A pre-built Agent Memory client (mainly for tests).
 
     Returns:
         A list of ``BaseTool`` instances to attach to a CrewAI agent.
@@ -257,7 +257,7 @@ def get_sessionized_agent_memory_tools(
     runtime: Optional[AgentMemoryRuntime] = None,
     client: Any = None,
 ) -> List[BaseTool]:
-    """Build AgentMemory tools scoped to a single session or user.
+    """Build Agent Memory tools scoped to a single session or user.
 
     The ``session_id`` becomes the scope, so reads and writes made through these
     tools are isolated to that session (for example ``"user-123"``).

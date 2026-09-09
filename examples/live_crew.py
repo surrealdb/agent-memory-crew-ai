@@ -1,9 +1,9 @@
-"""Run a real CrewAI crew with AgentMemory-backed automatic memory.
+"""Run a real CrewAI crew with Agent Memory-backed automatic memory.
 
 Requires:
   * pip install "agent-memory-crew-ai"   (pulls in crewai + surrealdb>=3.0.0a2)
-  * AgentMemory credentials in the environment:
-        export AGENT_MEMORY_ENDPOINT="https://your-instance.agent_memory.dev"
+  * Agent Memory credentials in the environment:
+        export AGENT_MEMORY_ENDPOINT="https://your-instance.agent-memory.dev"
         export AGENT_MEMORY_CONTEXT="my-context"
         export AGENT_MEMORY_API_KEY="..."
   * An LLM configured for CrewAI (for example OPENAI_API_KEY).
@@ -12,7 +12,7 @@ Run:
 
     python examples/live_crew.py
 
-This writes to your AgentMemory context, so use a throwaway context if you do not
+This writes to your Agent Memory context, so use a throwaway context if you do not
 want the demo data to stick.
 """
 
@@ -23,15 +23,15 @@ import sys
 
 from crewai import Agent, Crew, Task
 
-from agent_memory_crewai import AgentMemoryMemory
+from agent_memory_crewai import AgentMemory
 
 
 def main() -> int:
-    memory = AgentMemoryMemory(default_scope="user/tobie")
+    memory = AgentMemory(default_scope="user/tobie")
 
     if not memory.is_available():
         print(
-            "AgentMemory is not configured. Set AGENT_MEMORY_ENDPOINT / AGENT_MEMORY_CONTEXT / "
+            "Agent Memory is not configured. Set AGENT_MEMORY_ENDPOINT / AGENT_MEMORY_CONTEXT / "
             'AGENT_MEMORY_API_KEY and `pip install "surrealdb[memory]>=3.0.0b8"`.',
             file=sys.stderr,
         )

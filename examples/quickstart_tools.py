@@ -1,8 +1,8 @@
-"""Drive the AgentMemory tools against a fake client. No credentials needed.
+"""Drive the Agent Memory tools against a fake client. No credentials needed.
 
-This shows exactly what happens when an agent calls the AgentMemory tools, using an
+This shows exactly what happens when an agent calls the Agent Memory tools, using an
 in-memory fake client so it runs anywhere with nothing but this package and
-CrewAI installed. For the real thing against a AgentMemory instance and a live crew,
+CrewAI installed. For the real thing against an Agent Memory instance and a live crew,
 see ``live_crew.py``.
 
 Run:
@@ -15,7 +15,7 @@ from __future__ import annotations
 from agent_memory_crewai import AgentMemoryConfig, get_agent_memory_tools
 
 
-# --- a tiny fake AgentMemory client (mirrors the methods the tools call) --------
+# --- a tiny fake Agent Memory client (mirrors the methods the tools call) --------
 
 
 class _Resp:

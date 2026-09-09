@@ -1,15 +1,15 @@
-"""Shared runtime for the AgentMemory CrewAI integration.
+"""Shared runtime for the Agent Memory CrewAI integration.
 
-Both the tools and the automatic memory listener talk to AgentMemory through a
+Both the tools and the automatic memory listener talk to Agent Memory through a
 single :class:`AgentMemoryRuntime`. It owns the lazily built client and enforces
 the reliability rules the integration promises:
 
-* **Fail open.** Every AgentMemory call is wrapped. Failures are logged and degrade
+* **Fail open.** Every Agent Memory call is wrapped. Failures are logged and degrade
   to an empty result, never raised into the agent or crew loop.
 * **Circuit breaker.** After repeated failures, or any authentication error, the
-  runtime disables itself for the rest of the process and stops calling AgentMemory.
+  runtime disables itself for the rest of the process and stops calling Agent Memory.
 * **Non-blocking writes.** Writes are handed to a background daemon thread so a
-  crew never blocks on AgentMemory I/O.
+  crew never blocks on Agent Memory I/O.
 """
 
 from __future__ import annotations
@@ -32,7 +32,7 @@ _STOP = object()
 
 
 class AgentMemoryRuntime:
-    """A shared, fail-open wrapper around a AgentMemory client."""
+    """A shared, fail-open wrapper around an Agent Memory client."""
 
     def __init__(self, config: AgentMemoryConfig, client: Any = None) -> None:
         self._config = config
@@ -57,14 +57,14 @@ class AgentMemoryRuntime:
     # -- client --------------------------------------------------------------
 
     def client(self) -> Any:
-        """Return the AgentMemory client, building it lazily. None if unavailable."""
+        """Return the Agent Memory client, building it lazily. None if unavailable."""
         if self._disabled:
             return None
         if self._client is not None:
             return self._client
         if not self._config.is_configured():
             logger.warning(
-                "AgentMemory is not configured (need endpoint, context and api_key); "
+                "Agent Memory is not configured (need endpoint, context and api_key); "
                 "memory disabled."
             )
             self._disabled = True
@@ -80,7 +80,7 @@ class AgentMemoryRuntime:
             self._client = build_client(self._config)
             self._errors = agent_memory_errors()
         except Exception as exc:  # pragma: no cover - depends on SDK/env
-            logger.warning("AgentMemory client init failed; memory disabled: %s", exc)
+            logger.warning("Agent Memory client init failed; memory disabled: %s", exc)
             self._disabled = True
             self._client = None
         return self._client
@@ -105,7 +105,7 @@ class AgentMemoryRuntime:
     def _record_fail(self, where: str, exc: BaseException) -> None:
         if is_auth_error(exc):
             logger.warning(
-                "AgentMemory auth error during %s; disabling memory: %s", where, exc
+                "Agent Memory auth error during %s; disabling memory: %s", where, exc
             )
             self._disabled = True
             return
@@ -119,7 +119,7 @@ class AgentMemoryRuntime:
         )
         if self._consecutive_failures >= FAILURE_THRESHOLD:
             logger.warning(
-                "AgentMemory failure threshold reached; disabling memory for this process."
+                "Agent Memory failure threshold reached; disabling memory for this process."
             )
             self._disabled = True
 
@@ -192,7 +192,7 @@ class AgentMemoryRuntime:
 
 
 def to_jsonable(obj: Any) -> Any:
-    """Best-effort conversion of AgentMemory SDK response objects to plain JSON data."""
+    """Best-effort conversion of Agent Memory SDK response objects to plain JSON data."""
     if obj is None or isinstance(obj, (str, int, float, bool)):
         return obj
     if isinstance(obj, dict):
