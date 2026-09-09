@@ -1,7 +1,7 @@
 """Show the automatic memory listener against a fake client. No credentials.
 
 This drives the same event flow a real crew produces (task started, task
-completed, crew finished) and prints what the Spectron memory listener does at
+completed, crew finished) and prints what the AgentMemory memory listener does at
 each step: recall before a task, write the result back after a task, and
 consolidate when the crew finishes. It uses an in-memory fake client so it runs
 with nothing but this package and CrewAI installed.
@@ -22,7 +22,7 @@ from crewai.events import (
 )
 from crewai.tasks.task_output import TaskOutput
 
-from spectron_crewai import SpectronConfig, SpectronMemory
+from agent_memory_crewai import AgentMemoryConfig, AgentMemoryMemory
 
 
 class _Resp:
@@ -33,7 +33,7 @@ class _Resp:
         return dict(self._data)
 
 
-class FakeSpectron:
+class FakeAgentMemory:
     """In-memory stand-in that records what the listener sends it."""
 
     def __init__(self):
@@ -59,16 +59,16 @@ def _emit(event):
 
 
 def main() -> None:
-    config = SpectronConfig(
-        endpoint="https://demo.spectron.local",
+    config = AgentMemoryConfig(
+        endpoint="https://demo.agent_memory.local",
         context="demo",
         api_key="sk-demo",
         default_scope="user/tobie",
     )
-    fake = FakeSpectron()
+    fake = FakeAgentMemory()
 
-    # In real use: SpectronMemory(default_scope="user/tobie").attach()
-    memory = SpectronMemory(config=config, client=fake)
+    # In real use: AgentMemoryMemory(default_scope="user/tobie").attach()
+    memory = AgentMemoryMemory(config=config, client=fake)
 
     # Seed a fact so the pre-task recall has something to return.
     memory.remember_many([{"role": "user", "content": "Tobie prefers window seats"}])

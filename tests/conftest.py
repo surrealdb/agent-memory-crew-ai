@@ -1,14 +1,14 @@
-"""Shared fakes and fixtures for the Spectron CrewAI tests.
+"""Shared fakes and fixtures for the AgentMemory CrewAI tests.
 
 Nothing here touches the network or the real ``surrealdb`` SDK: a fake client
-stands in for Spectron and is injected directly into the runtime.
+stands in for AgentMemory and is injected directly into the runtime.
 """
 
 from __future__ import annotations
 
 import pytest
 
-from spectron_crewai.config import SpectronConfig
+from agent_memory_crewai.config import AgentMemoryConfig
 
 
 class FakeResp:
@@ -30,7 +30,7 @@ class FakeDocuments:
         return FakeResp(document_id="doc:1", title=title or path)
 
 
-class FakeSpectron:
+class FakeAgentMemory:
     """Records calls and returns canned responses; can be told to fail."""
 
     def __init__(self, fail=False):
@@ -85,8 +85,8 @@ class FakeSpectron:
 
 @pytest.fixture
 def config():
-    return SpectronConfig(
-        endpoint="https://example.spectron.dev",
+    return AgentMemoryConfig(
+        endpoint="https://example.agent_memory.dev",
         context="test-ctx",
         api_key="sk-test",
         default_scope="user/tobie",
@@ -96,4 +96,4 @@ def config():
 
 @pytest.fixture
 def fake():
-    return FakeSpectron()
+    return FakeAgentMemory()

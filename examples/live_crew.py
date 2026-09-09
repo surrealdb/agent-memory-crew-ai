@@ -1,18 +1,18 @@
-"""Run a real CrewAI crew with Spectron-backed automatic memory.
+"""Run a real CrewAI crew with AgentMemory-backed automatic memory.
 
 Requires:
-  * pip install "spectron-crew-ai"   (pulls in crewai + surrealdb>=3.0.0a2)
-  * Spectron credentials in the environment:
-        export SPECTRON_ENDPOINT="https://your-instance.spectron.dev"
-        export SPECTRON_CONTEXT="my-context"
-        export SPECTRON_API_KEY="..."
+  * pip install "agent-memory-crew-ai"   (pulls in crewai + surrealdb>=3.0.0a2)
+  * AgentMemory credentials in the environment:
+        export AGENT_MEMORY_ENDPOINT="https://your-instance.agent_memory.dev"
+        export AGENT_MEMORY_CONTEXT="my-context"
+        export AGENT_MEMORY_API_KEY="..."
   * An LLM configured for CrewAI (for example OPENAI_API_KEY).
 
 Run:
 
     python examples/live_crew.py
 
-This writes to your Spectron context, so use a throwaway context if you do not
+This writes to your AgentMemory context, so use a throwaway context if you do not
 want the demo data to stick.
 """
 
@@ -23,16 +23,16 @@ import sys
 
 from crewai import Agent, Crew, Task
 
-from spectron_crewai import SpectronMemory
+from agent_memory_crewai import AgentMemoryMemory
 
 
 def main() -> int:
-    memory = SpectronMemory(default_scope="user/tobie")
+    memory = AgentMemoryMemory(default_scope="user/tobie")
 
     if not memory.is_available():
         print(
-            "Spectron is not configured. Set SPECTRON_ENDPOINT / SPECTRON_CONTEXT / "
-            'SPECTRON_API_KEY and `pip install "surrealdb>=3.0.0a2"`.',
+            "AgentMemory is not configured. Set AGENT_MEMORY_ENDPOINT / AGENT_MEMORY_CONTEXT / "
+            'AGENT_MEMORY_API_KEY and `pip install "surrealdb[memory]>=3.0.0b8"`.',
             file=sys.stderr,
         )
         return 1

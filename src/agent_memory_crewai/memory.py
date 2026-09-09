@@ -1,22 +1,22 @@
-"""Automatic Spectron memory for CrewAI.
+"""Automatic AgentMemory memory for CrewAI.
 
 Two pieces:
 
-* :class:`SpectronMemory` is a small façade over a shared Spectron client. Use it
+* :class:`AgentMemoryMemory` is a small façade over a shared AgentMemory client. Use it
   directly for programmatic remember/recall, or to build the tool set.
-* :class:`SpectronMemoryListener` wires that memory into a crew through CrewAI's
+* :class:`AgentMemoryMemoryListener` wires that memory into a crew through CrewAI's
   event bus so memory works without changing your agents or tasks:
 
     - before each task it recalls relevant memory and stashes it (readable on the
       memory object and logged when ``verbose`` is set),
-    - after each task it writes the result back to Spectron on a background
+    - after each task it writes the result back to AgentMemory on a background
       thread,
     - when the crew finishes it triggers a background consolidation.
 
 Constructing a listener registers it on the global event bus, so a single
-``SpectronMemory(...).attach()`` call is enough to enable automatic memory.
+``AgentMemoryMemory(...).attach()`` call is enough to enable automatic memory.
 
-Every handler is fail-open: a Spectron problem is logged and skipped, never
+Every handler is fail-open: a AgentMemory problem is logged and skipped, never
 raised into the crew.
 """
 
@@ -32,15 +32,15 @@ from crewai.events import (
     TaskStartedEvent,
 )
 
-from ._runtime import SpectronRuntime, to_jsonable
-from .config import SpectronConfig
-from .tools import get_spectron_tools
+from ._runtime import AgentMemoryRuntime, to_jsonable
+from .config import AgentMemoryConfig
+from .tools import get_agent_memory_tools
 
-logger = logging.getLogger("spectron_crewai")
+logger = logging.getLogger("agent_memory_crewai")
 
 
-class SpectronMemory:
-    """A façade over a shared Spectron client for use with CrewAI."""
+class AgentMemoryMemory:
+    """A façade over a shared AgentMemory client for use with CrewAI."""
 
     def __init__(
         self,
@@ -50,21 +50,21 @@ class SpectronMemory:
         api_key: Optional[str] = None,
         default_scope: Optional[str] = None,
         top_k: Optional[int] = None,
-        config: Optional[SpectronConfig] = None,
-        runtime: Optional[SpectronRuntime] = None,
+        config: Optional[AgentMemoryConfig] = None,
+        runtime: Optional[AgentMemoryRuntime] = None,
         client: Any = None,
     ) -> None:
-        cfg = config or SpectronConfig.from_env(
+        cfg = config or AgentMemoryConfig.from_env(
             endpoint=endpoint,
             context=context,
             api_key=api_key,
             default_scope=default_scope,
             top_k=top_k,
         )
-        self._runtime = runtime or SpectronRuntime(cfg, client=client)
+        self._runtime = runtime or AgentMemoryRuntime(cfg, client=client)
 
     @property
-    def runtime(self) -> SpectronRuntime:
+    def runtime(self) -> AgentMemoryRuntime:
         return self._runtime
 
     def is_available(self) -> bool:
@@ -153,14 +153,14 @@ class SpectronMemory:
     # -- wiring --------------------------------------------------------------
 
     def tools(self, *, scope: Optional[str] = None) -> List[Any]:
-        """Return the Spectron tool set backed by this memory's client."""
-        return get_spectron_tools(runtime=self._runtime, scope=scope)
+        """Return the AgentMemory tool set backed by this memory's client."""
+        return get_agent_memory_tools(runtime=self._runtime, scope=scope)
 
-    def listener(self, **kwargs: Any) -> "SpectronMemoryListener":
+    def listener(self, **kwargs: Any) -> "AgentMemoryMemoryListener":
         """Create (and register) an event listener for automatic memory."""
-        return SpectronMemoryListener(self, **kwargs)
+        return AgentMemoryMemoryListener(self, **kwargs)
 
-    def attach(self, **kwargs: Any) -> "SpectronMemoryListener":
+    def attach(self, **kwargs: Any) -> "AgentMemoryMemoryListener":
         """Enable automatic memory. Alias for :meth:`listener`.
 
         Constructing the listener registers it on the CrewAI event bus, so the
@@ -173,12 +173,12 @@ class SpectronMemory:
         self._runtime.close()
 
 
-class SpectronMemoryListener(BaseEventListener):
-    """Wires :class:`SpectronMemory` into a crew through the CrewAI event bus."""
+class AgentMemoryMemoryListener(BaseEventListener):
+    """Wires :class:`AgentMemoryMemory` into a crew through the CrewAI event bus."""
 
     def __init__(
         self,
-        memory: SpectronMemory,
+        memory: AgentMemoryMemory,
         *,
         recall: bool = True,
         write: bool = True,
@@ -211,12 +211,12 @@ class SpectronMemoryListener(BaseEventListener):
             try:
                 hits = self._memory.recall(query, scope=self._scope)
             except Exception as exc:  # pragma: no cover - fail open
-                logger.warning("Spectron auto-recall failed: %s", exc)
+                logger.warning("AgentMemory auto-recall failed: %s", exc)
                 return
             block = _format_block(hits)
             self.last_context = block
             if block and self.verbose:
-                logger.info("Spectron recalled for task:\n%s", block)
+                logger.info("AgentMemory recalled for task:\n%s", block)
 
         @crewai_event_bus.on(TaskCompletedEvent)
         def _on_task_completed(source: Any, event: Any) -> None:  # noqa: ANN001

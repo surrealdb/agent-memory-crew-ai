@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/project/spectron-crew-ai/
+      url: https://pypi.org/project/agent-memory-crew-ai/
     # Trusted Publishing (OIDC): no API token is stored. Configure the publisher
     # for this repo and workflow at https://pypi.org/manage/account/publishing/.
     permissions:

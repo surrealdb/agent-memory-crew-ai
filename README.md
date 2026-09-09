@@ -1,10 +1,10 @@
-# Spectron ⇄ CrewAI
+# AgentMemory ⇄ CrewAI
 
 Give your [CrewAI](https://www.crewai.com/) agents persistent, provenance-first
-memory backed by [SurrealDB Spectron](https://surrealdb.com/platform/spectron):
+memory backed by [SurrealDB AgentMemory](https://surrealdb.com/agent-memory):
 tri-temporal agent memory with semantic, lexical, graph and temporal recall.
 
-This package offers two ways to use Spectron with CrewAI, and they work well
+This package offers two ways to use AgentMemory with CrewAI, and they work well
 together:
 
 - **Tools** an agent calls explicitly (recall, remember, context, forget,
@@ -17,12 +17,12 @@ together:
 
 - Python 3.10+
 - CrewAI 1.5+
-- Spectron access (endpoint, context, API key).
+- AgentMemory access (endpoint, context, API key).
 
 ## Install
 
 ```bash
-pip install spectron-crew-ai
+pip install agent-memory-crew-ai
 ```
 
 ## Configure
@@ -31,30 +31,30 @@ Provide credentials through the environment. The API key is a secret and belongs
 in a `.env` file, not in source.
 
 ```bash
-export SPECTRON_ENDPOINT="https://your-instance.spectron.dev"
-export SPECTRON_CONTEXT="my-context"
-export SPECTRON_API_KEY="..."
+export AGENT_MEMORY_ENDPOINT="https://your-instance.agent_memory.dev"
+export AGENT_MEMORY_CONTEXT="my-context"
+export AGENT_MEMORY_API_KEY="..."
 # optional
-export SPECTRON_DEFAULT_SCOPE="user/tobie"
-export SPECTRON_TOP_K="5"
+export AGENT_MEMORY_DEFAULT_SCOPE="user/tobie"
+export AGENT_MEMORY_TOP_K="5"
 ```
 
-You can also pass any of these directly to `SpectronMemory(...)` or
-`SpectronConfig(...)` instead of using the environment.
+You can also pass any of these directly to `AgentMemoryMemory(...)` or
+`AgentMemoryConfig(...)` instead of using the environment.
 
 ## Quickstart: tools
 
-Attach the Spectron tools to an agent and let it decide when to use memory.
+Attach the AgentMemory tools to an agent and let it decide when to use memory.
 
 ```python
 from crewai import Agent, Task, Crew
-from spectron_crewai import get_spectron_tools
+from agent_memory_crewai import get_agent_memory_tools
 
 agent = Agent(
     role="Research Analyst",
     goal="Answer questions using long-term memory",
     backstory="You recall what you have learned before and store new findings.",
-    tools=get_spectron_tools(scope="user/tobie"),
+    tools=get_agent_memory_tools(scope="user/tobie"),
     verbose=True,
 )
 
@@ -70,9 +70,9 @@ Crew(agents=[agent], tasks=[task]).kickoff()
 To isolate memory per user or session, use the sessionized factory:
 
 ```python
-from spectron_crewai import get_sessionized_spectron_tools
+from agent_memory_crewai import get_sessionized_agent_memory_tools
 
-tools = get_sessionized_spectron_tools("user-123")
+tools = get_sessionized_agent_memory_tools("user-123")
 ```
 
 ## Quickstart: automatic memory
@@ -83,9 +83,9 @@ when the crew finishes.
 
 ```python
 from crewai import Agent, Task, Crew
-from spectron_crewai import SpectronMemory
+from agent_memory_crewai import AgentMemoryMemory
 
-memory = SpectronMemory(default_scope="user/tobie")
+memory = AgentMemoryMemory(default_scope="user/tobie")
 memory.attach(verbose=True)   # registers the event listener
 
 agent = Agent(
@@ -105,7 +105,7 @@ Crew(agents=[agent], tasks=[task]).kickoff()
 memory.close()                # flush background writes on shutdown
 ```
 
-`SpectronMemory` is also usable directly:
+`AgentMemoryMemory` is also usable directly:
 
 ```python
 memory.remember("Tobie prefers window seats", scope="user/tobie")
@@ -115,33 +115,33 @@ answer = memory.context("What are Tobie's travel preferences?")
 
 ## Tools
 
-| Tool | Spectron call | Purpose |
+| Tool | AgentMemory call | Purpose |
 |---|---|---|
-| `spectron_recall(query, k?)` | `recall` | Search memory (semantic, lexical, graph, temporal). |
-| `spectron_remember(text, scope?)` | `remember` | Store a durable fact. |
-| `spectron_context(query, k?)` | `query_context` | Synthesised answer from memory. |
-| `spectron_forget(query, purge?)` | `forget` | Supersede (default) or hard-delete. |
-| `spectron_reflect(query, persist?)` | `reflect` | Derive insights; optionally persist. |
-| `spectron_upload(path, title?)` | `documents.upload` | Ingest a document into knowledge memory. |
+| `agent_memory_recall(query, k?)` | `recall` | Search memory (semantic, lexical, graph, temporal). |
+| `agent_memory_remember(text, scope?)` | `remember` | Store a durable fact. |
+| `agent_memory_context(query, k?)` | `query_context` | Synthesised answer from memory. |
+| `agent_memory_forget(query, purge?)` | `forget` | Supersede (default) or hard-delete. |
+| `agent_memory_reflect(query, persist?)` | `reflect` | Derive insights; optionally persist. |
+| `agent_memory_upload(path, title?)` | `documents.upload` | Ingest a document into knowledge memory. |
 
 ## Configuration
 
 | Setting | Env var | Default | Notes |
 |---|---|---|---|
-| `api_key` | `SPECTRON_API_KEY` | none | secret, required (keep it in `.env`) |
-| `endpoint` | `SPECTRON_ENDPOINT` | none | required, origin with no trailing slash |
-| `context` | `SPECTRON_CONTEXT` | none | required; Spectron pins a client to one context |
-| `default_scope` | `SPECTRON_DEFAULT_SCOPE` | none | scope for writes and lens for reads, for example `user/tobie` |
-| `top_k` | `SPECTRON_TOP_K` | `5` | memories recalled per query |
-| `timeout` | `SPECTRON_TIMEOUT` | `30` | client timeout in seconds |
-| `max_retries` | `SPECTRON_MAX_RETRIES` | `3` | client retry attempts |
+| `api_key` | `AGENT_MEMORY_API_KEY` | none | secret, required (keep it in `.env`) |
+| `endpoint` | `AGENT_MEMORY_ENDPOINT` | none | required, origin with no trailing slash |
+| `context` | `AGENT_MEMORY_CONTEXT` | none | required; AgentMemory pins a client to one context |
+| `default_scope` | `AGENT_MEMORY_DEFAULT_SCOPE` | none | scope for writes and lens for reads, for example `user/tobie` |
+| `top_k` | `AGENT_MEMORY_TOP_K` | `5` | memories recalled per query |
+| `timeout` | `AGENT_MEMORY_TIMEOUT` | `30` | client timeout in seconds |
+| `max_retries` | `AGENT_MEMORY_MAX_RETRIES` | `3` | client retry attempts |
 
 ## Reliability
 
 The integration is built to never destabilise a crew:
 
-- Writes run on a background daemon thread, so tasks never block on Spectron I/O.
-- Every Spectron call is wrapped. Failures are logged and degrade to an empty or
+- Writes run on a background daemon thread, so tasks never block on AgentMemory I/O.
+- Every AgentMemory call is wrapped. Failures are logged and degrade to an empty or
   error result rather than raising into the agent or crew loop (fail open). A
   tool returns a short JSON error string instead of throwing.
 - After repeated failures, or any authentication error, a circuit breaker
@@ -151,9 +151,9 @@ The integration is built to never destabilise a crew:
 
 CrewAI's built-in `Memory` storage backend is embedding-centric: it embeds a
 query locally and hands the storage layer a vector, never the query text.
-Spectron is a text-native service that does its own embedding and multi-signal
+AgentMemory is a text-native service that does its own embedding and multi-signal
 ranking server-side, so it is exposed here as tools and an event-driven memory
-layer rather than as a `StorageBackend`. This keeps Spectron's semantic, lexical,
+layer rather than as a `StorageBackend`. This keeps AgentMemory's semantic, lexical,
 graph and temporal recall intact.
 
 ## Development
