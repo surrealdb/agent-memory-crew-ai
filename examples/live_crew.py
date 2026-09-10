@@ -1,7 +1,7 @@
 """Run a real CrewAI crew with Agent Memory-backed automatic memory.
 
 Requires:
-  * pip install "agent-memory-crew-ai"   (pulls in crewai + surrealdb>=3.0.0a2)
+  * pip install "agent-memory-crew-ai"   (pulls in crewai + surrealdb[memory]>=3.0.0b8)
   * Agent Memory credentials in the environment:
         export AGENT_MEMORY_ENDPOINT="https://your-instance.agent-memory.dev"
         export AGENT_MEMORY_CONTEXT="my-context"
