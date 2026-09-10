@@ -1,15 +1,15 @@
-"""Shared runtime for the Spectron CrewAI integration.
+"""Shared runtime for the Agent Memory CrewAI integration.
 
-Both the tools and the automatic memory listener talk to Spectron through a
-single :class:`SpectronRuntime`. It owns the lazily built client and enforces
+Both the tools and the automatic memory listener talk to Agent Memory through a
+single :class:`AgentMemoryRuntime`. It owns the lazily built client and enforces
 the reliability rules the integration promises:
 
-* **Fail open.** Every Spectron call is wrapped. Failures are logged and degrade
+* **Fail open.** Every Agent Memory call is wrapped. Failures are logged and degrade
   to an empty result, never raised into the agent or crew loop.
 * **Circuit breaker.** After repeated failures, or any authentication error, the
-  runtime disables itself for the rest of the process and stops calling Spectron.
+  runtime disables itself for the rest of the process and stops calling Agent Memory.
 * **Non-blocking writes.** Writes are handed to a background daemon thread so a
-  crew never blocks on Spectron I/O.
+  crew never blocks on Agent Memory I/O.
 """
 
 from __future__ import annotations
@@ -20,10 +20,10 @@ import queue
 import threading
 from typing import Any, Callable, Optional, Tuple
 
-from .client import build_client, is_auth_error, spectron_errors, spectron_installed
-from .config import SpectronConfig
+from .client import build_client, is_auth_error, agent_memory_errors, agent_memory_installed
+from .config import AgentMemoryConfig
 
-logger = logging.getLogger("spectron_crewai")
+logger = logging.getLogger("agent_memory_crewai")
 
 # Disable the runtime after this many consecutive failures.
 FAILURE_THRESHOLD = 3
@@ -31,13 +31,13 @@ FAILURE_THRESHOLD = 3
 _STOP = object()
 
 
-class SpectronRuntime:
-    """A shared, fail-open wrapper around a Spectron client."""
+class AgentMemoryRuntime:
+    """A shared, fail-open wrapper around an Agent Memory client."""
 
-    def __init__(self, config: SpectronConfig, client: Any = None) -> None:
+    def __init__(self, config: AgentMemoryConfig, client: Any = None) -> None:
         self._config = config
         self._client = client
-        self._errors: Tuple[type, ...] = spectron_errors()
+        self._errors: Tuple[type, ...] = agent_memory_errors()
         self._consecutive_failures = 0
         self._disabled = False
         self._lock = threading.Lock()
@@ -47,7 +47,7 @@ class SpectronRuntime:
     # -- identity ------------------------------------------------------------
 
     @property
-    def config(self) -> SpectronConfig:
+    def config(self) -> AgentMemoryConfig:
         return self._config
 
     @property
@@ -57,30 +57,30 @@ class SpectronRuntime:
     # -- client --------------------------------------------------------------
 
     def client(self) -> Any:
-        """Return the Spectron client, building it lazily. None if unavailable."""
+        """Return the Agent Memory client, building it lazily. None if unavailable."""
         if self._disabled:
             return None
         if self._client is not None:
             return self._client
         if not self._config.is_configured():
             logger.warning(
-                "Spectron is not configured (need endpoint, context and api_key); "
+                "Agent Memory is not configured (need endpoint, context and api_key); "
                 "memory disabled."
             )
             self._disabled = True
             return None
-        if not spectron_installed():
+        if not agent_memory_installed():
             logger.warning(
-                "Spectron SDK not installed; run `pip install \"surrealdb>=3.0.0a2\"`. "
+                "Agent Memory SDK not installed; run `pip install \"surrealdb[memory]>=3.0.0b8\"`. "
                 "Memory disabled."
             )
             self._disabled = True
             return None
         try:
             self._client = build_client(self._config)
-            self._errors = spectron_errors()
+            self._errors = agent_memory_errors()
         except Exception as exc:  # pragma: no cover - depends on SDK/env
-            logger.warning("Spectron client init failed; memory disabled: %s", exc)
+            logger.warning("Agent Memory client init failed; memory disabled: %s", exc)
             self._disabled = True
             self._client = None
         return self._client
@@ -91,7 +91,7 @@ class SpectronRuntime:
             return False
         if self._client is not None:
             return True
-        return self._config.is_configured() and spectron_installed()
+        return self._config.is_configured() and agent_memory_installed()
 
     @property
     def disabled(self) -> bool:
@@ -105,13 +105,13 @@ class SpectronRuntime:
     def _record_fail(self, where: str, exc: BaseException) -> None:
         if is_auth_error(exc):
             logger.warning(
-                "Spectron auth error during %s; disabling memory: %s", where, exc
+                "Agent Memory auth error during %s; disabling memory: %s", where, exc
             )
             self._disabled = True
             return
         self._consecutive_failures += 1
         logger.warning(
-            "Spectron %s failed (%d/%d): %s",
+            "AgentMemory %s failed (%d/%d): %s",
             where,
             self._consecutive_failures,
             FAILURE_THRESHOLD,
@@ -119,7 +119,7 @@ class SpectronRuntime:
         )
         if self._consecutive_failures >= FAILURE_THRESHOLD:
             logger.warning(
-                "Spectron failure threshold reached; disabling memory for this process."
+                "Agent Memory failure threshold reached; disabling memory for this process."
             )
             self._disabled = True
 
@@ -159,7 +159,7 @@ class SpectronRuntime:
             if self._worker and self._worker.is_alive():
                 return
             self._worker = threading.Thread(
-                target=self._write_loop, name="spectron-writer", daemon=True
+                target=self._write_loop, name="agent_memory-writer", daemon=True
             )
             self._worker.start()
 
@@ -192,7 +192,7 @@ class SpectronRuntime:
 
 
 def to_jsonable(obj: Any) -> Any:
-    """Best-effort conversion of Spectron SDK response objects to plain JSON data."""
+    """Best-effort conversion of Agent Memory SDK response objects to plain JSON data."""
     if obj is None or isinstance(obj, (str, int, float, bool)):
         return obj
     if isinstance(obj, dict):

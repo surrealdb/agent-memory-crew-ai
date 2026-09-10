@@ -1,4 +1,4 @@
-"""Tests for SpectronMemory and the automatic-memory event listener."""
+"""Tests for Agent Memory and the automatic-memory event listener."""
 
 from __future__ import annotations
 
@@ -10,13 +10,13 @@ from crewai.events import (
 )
 from crewai.tasks.task_output import TaskOutput
 
-from spectron_crewai import SpectronMemory
+from agent_memory_crewai import AgentMemory
 
-from conftest import FakeSpectron
+from conftest import FakeAgentMemory
 
 
 def _memory(config, fake):
-    return SpectronMemory(config=config, client=fake)
+    return AgentMemory(config=config, client=fake)
 
 
 def _task_output(description="Plan a trip for Tobie", raw="Day 1: Lisbon"):
@@ -102,9 +102,9 @@ def test_listener_toggles_off(config, fake):
 
 
 def test_listener_fails_open(config):
-    fake = FakeSpectron(fail=True)
+    fake = FakeAgentMemory(fail=True)
     with crewai_event_bus.scoped_handlers():
-        mem = SpectronMemory(config=config, client=fake)
+        mem = AgentMemory(config=config, client=fake)
         mem.attach(session_id="s")
         # None of these should raise despite the client failing.
         _emit(TaskStartedEvent(context="q"))
