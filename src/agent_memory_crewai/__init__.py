@@ -10,8 +10,8 @@ Two ways to give a crew persistent, provenance-first memory backed by
 
 * **Automatic memory** wired into a crew through the event bus::
 
-      from agent_memory_crewai import Agent Memory
-      memory = Agent Memory(default_scope="user/tobie")
+      from agent_memory_crewai import AgentMemory
+      memory = AgentMemory(default_scope="user/tobie")
       memory.attach()   # recall before tasks, write back after, consolidate at end
 """
 

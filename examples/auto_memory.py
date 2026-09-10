@@ -67,7 +67,7 @@ def main() -> None:
     )
     fake = FakeAgentMemory()
 
-    # In real use: Agent Memory(default_scope="user/tobie").attach()
+    # In real use: AgentMemory(default_scope="user/tobie").attach()
     memory = AgentMemory(config=config, client=fake)
 
     # Seed a fact so the pre-task recall has something to return.

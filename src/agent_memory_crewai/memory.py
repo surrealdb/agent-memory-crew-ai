@@ -2,7 +2,7 @@
 
 Two pieces:
 
-* :class:`Agent Memory` is a small façade over a shared Agent Memory client. Use it
+* :class:`AgentMemory` is a small façade over a shared Agent Memory client. Use it
   directly for programmatic remember/recall, or to build the tool set.
 * :class:`AgentMemoryListener` wires that memory into a crew through CrewAI's
   event bus so memory works without changing your agents or tasks:
@@ -14,7 +14,7 @@ Two pieces:
     - when the crew finishes it triggers a background consolidation.
 
 Constructing a listener registers it on the global event bus, so a single
-``Agent Memory(...).attach()`` call is enough to enable automatic memory.
+``AgentMemory(...).attach()`` call is enough to enable automatic memory.
 
 Every handler is fail-open: an Agent Memory problem is logged and skipped, never
 raised into the crew.
@@ -174,7 +174,7 @@ class AgentMemory:
 
 
 class AgentMemoryListener(BaseEventListener):
-    """Wires :class:`Agent Memory` into a crew through the CrewAI event bus."""
+    """Wires :class:`AgentMemory` into a crew through the CrewAI event bus."""
 
     def __init__(
         self,
